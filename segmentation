@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>VWO Shadow DOM Test</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    button { margin: 10px; padding: 8px 14px; }
+    .card { border: 1px solid #ccc; padding: 10px; margin-top: 10px; width: 200px; }
+  </style>
+</head>
+<body>
+  <h2>VWO Element Trigger Testing (Shadow DOM vs Normal)</h2>
+
+  <button id="add-normal">Add Normal Dynamic Card</button>
+  <button id="add-shadow">Add Shadow DOM Card</button>
+  <div id="container"></div>
+
+  <script>
+    // Add a normal dynamic element (VWO should detect it)
+    document.getElementById("add-normal").addEventListener("click", () => {
+      const div = document.createElement("div");
+      div.className = "card";
+      div.id = "dynamic-card-1";
+      div.innerHTML = `<img src="yr.jpg" alt="Normal Dynamic Card">`;
+      document.getElementById("container").appendChild(div);
+      console.log("✅ Normal dynamic card added");
+    });
+
+    // Add a shadow DOM dynamic element (VWO may not detect it)
+    document.getElementById("add-shadow").addEventListener("click", () => {
+      const host = document.createElement("div");
+      host.className = "card";
+      host.id = "dynamic-card-1";
+      document.getElementById("container").appendChild(host);
+
+      const shadow = host.attachShadow({ mode: "open" });
+      const img = document.createElement("img");
+      img.src = "intro-to-html\images\yr.jpg";
+      img.alt = "Shadow DOM Card";
+
+      shadow.innerHTML = `<style>img{border:2px solid red;}</style>`;
+      shadow.appendChild(img);
+
+      console.log("⚠️ Shadow DOM card added (normal selectors won't see this)");
+    });
+  </script>
+</body>
+</html>
